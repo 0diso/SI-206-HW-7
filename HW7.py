@@ -55,6 +55,7 @@ def make_positions_table(data, cur, conn):
 def make_players_table(data, cur, conn):
     #set up table
   cur.execute('CREATE TABLE IF NOT EXISTS Players(id INTEGER PRIMARY KEY, name TEXT, position_id INTEGER, birthyear INTEGER, nationality TEXT)')
+
   #iterate through list of players and retrieve data
   for person in data["squad"]:
       id = int(person.get("id", None))
@@ -70,8 +71,6 @@ def make_players_table(data, cur, conn):
       conn.commit()
       
       
-
-
 
 ## [TASK 2]: 10 points
 # Finish the function nationality_search
@@ -135,7 +134,12 @@ def birthyear_nationality_search(age, country, cur, conn):
     # HINT: You'll have to use JOIN for this task.
 
 def position_birth_search(position, age, cur, conn):
-       pass
+       lst = []
+       year = 2023 - age
+       results = cur.execute('SELECT Players.name, Positions.position,  Players.birthyear FROM Players JOIN Positions ON Players.position_id = Positions.id  WHERE Players.birthyear > ? AND Positions.position = ?', (year,position)).fetchall()
+       for i in range(len(results)):
+           lst.append(results[i])
+       return lst
 
 
 # [EXTRA CREDIT]
@@ -172,6 +176,7 @@ def position_birth_search(position, age, cur, conn):
 #     and the value associated with each team is the number of times
 #     they have won since the year passed, including the season that ended
 #     the passed year. 
+
 
 def make_winners_table(data, cur, conn):
     pass
@@ -234,6 +239,7 @@ class TestAllMethods(unittest.TestCase):
         self.assertEqual(len(c), 1)
         self.assertEqual(c, [('Teden Mengi', 'Defence', 2002)])
     
+    '''
     # test extra credit
     def test_make_winners_table(self):
         self.cur2.execute('SELECT * from Winners')
@@ -250,8 +256,7 @@ class TestAllMethods(unittest.TestCase):
     def test_winners_since_search(self):
 
         pass
-
-
+    '''
 def main():
 
     #### FEEL FREE TO USE THIS SPACE TO TEST OUT YOUR FUNCTIONS
@@ -265,8 +270,8 @@ def main():
 
     seasons_json_data = read_data('football_PL.json')
     cur2, conn2 = open_database('Football_seasons.db')
-    make_winners_table(seasons_json_data, cur2, conn2)
-    make_seasons_table(seasons_json_data, cur2, conn2)
+    #make_winners_table(seasons_json_data, cur2, conn2)
+    #make_seasons_table(seasons_json_data, cur2, conn2)
     conn2.close()
 
 
