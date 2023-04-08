@@ -87,9 +87,9 @@ def nationality_search(countries, cur, conn):
     nations = []
     for country in countries:
        selected = cur.execute('SELECT name, position_id, nationality FROM Players WHERE nationality = ?', (country,)).fetchall()
+       conn.commit()
        for i in range(len(selected)):
            nations.append(selected[i])
-       
           
     return nations
 
@@ -110,7 +110,12 @@ def nationality_search(countries, cur, conn):
 
 
 def birthyear_nationality_search(age, country, cur, conn):
-    pass
+    age_lst = [] 
+    year = 2023-age
+    selected = cur.execute('SELECT name, nationality, birthyear FROM Players WHERE nationality = ? AND birthyear < ? ', (country,year,)).fetchall()
+    for i in range(len(selected)):
+        age_lst.append(selected[i])
+    return age_lst
 
 ## [TASK 4]: 15 points
 # finish the function position_birth_search
