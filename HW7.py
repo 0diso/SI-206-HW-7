@@ -86,8 +86,10 @@ def make_players_table(data, cur, conn):
 def nationality_search(countries, cur, conn):
     nations = []
     for country in countries:
-       tup = cur.execute('SELECT name, position_id, nationality FROM Players WHERE nationality = ?', (country,)).fetchall()
-       nations.append(tup)
+       selected = cur.execute('SELECT name, position_id, nationality FROM Players WHERE nationality = ?', (country,)).fetchall()
+       for i in range(len(selected)):
+           nations.append(selected[i])
+       
           
     return nations
 
